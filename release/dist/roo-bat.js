@@ -67,6 +67,31 @@
     return target;
   };
 
+  var get = function get(object, property, receiver) {
+    if (object === null) object = Function.prototype;
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent === null) {
+        return undefined;
+      } else {
+        return get(parent, property, receiver);
+      }
+    } else if ("value" in desc) {
+      return desc.value;
+    } else {
+      var getter = desc.get;
+
+      if (getter === undefined) {
+        return undefined;
+      }
+
+      return getter.call(receiver);
+    }
+  };
+
   var inherits = function (subClass, superClass) {
     if (typeof superClass !== "function" && superClass !== null) {
       throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
@@ -245,10 +270,125 @@
       primary: false
   };
 
+  function getDisplayName(WrappedComponent) {
+         return WrappedComponent.displayName || WrappedComponent.name || 'Component';
+  }
+
+  function withHeader (WrappedComponent) {
+    var _class, _temp;
+
+    return _temp = _class = function (_Component) {
+      inherits(WithHeader, _Component);
+
+      function WithHeader() {
+        classCallCheck(this, WithHeader);
+        return possibleConstructorReturn(this, (WithHeader.__proto__ || Object.getPrototypeOf(WithHeader)).apply(this, arguments));
+      }
+
+      createClass(WithHeader, [{
+        key: 'render',
+        value: function render() {
+          return React__default.createElement(
+            'div',
+            null,
+            React__default.createElement(
+              'div',
+              { className: 'base-header' },
+              '\u6211\u662F\u6807\u9898--\u6211\u7279\u522B\u7F8E-\u771F\u7684'
+            ),
+            React__default.createElement(WrappedComponent, _extends({ data: { test: 25 } }, this.props))
+          );
+        }
+      }]);
+      return WithHeader;
+    }(React.Component), _class.displayName = 'WithHeader(' + getDisplayName(WrappedComponent) + ')', _temp;
+  }
+
+  function withFooter (msg) {
+    return function withFooter(WrappedComponent) {
+      var _class, _temp;
+
+      return _temp = _class = function (_Component) {
+        inherits(WithFooter, _Component);
+
+        function WithFooter() {
+          classCallCheck(this, WithFooter);
+          return possibleConstructorReturn(this, (WithFooter.__proto__ || Object.getPrototypeOf(WithFooter)).apply(this, arguments));
+        }
+
+        createClass(WithFooter, [{
+          key: 'render',
+          value: function render() {
+            return React__default.createElement(
+              'div',
+              null,
+              React__default.createElement(
+                'div',
+                { className: 'base-header' },
+                '\u6211\u7684\u5E95\u90E8--\u957F\u7684\u975E\u5E38\u597D\u770B ',
+                msg || ''
+              ),
+              React__default.createElement(WrappedComponent, _extends({ data: { test: 25 } }, this.props))
+            );
+          }
+        }]);
+        return WithFooter;
+      }(React.Component), _class.displayName = 'WithHeader(' + getDisplayName(WrappedComponent) + ')', _temp;
+    };
+  }
+
+  function withLoad (loading) {
+      return function (WrappedComponent) {
+          var _class, _temp;
+
+          return _temp = _class = function (_WrappedComponent) {
+              inherits(_class, _WrappedComponent);
+
+              function _class() {
+                  classCallCheck(this, _class);
+                  return possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).apply(this, arguments));
+              }
+
+              createClass(_class, [{
+                  key: 'componentWillUpdate',
+                  value: function componentWillUpdate(nextProps, nextState) {
+                      console.log('withLoading将会更新');
+                  }
+              }, {
+                  key: 'componentDidMount',
+                  value: function componentDidMount() {
+                      console.log('djj');
+                  }
+              }, {
+                  key: 'render',
+                  value: function render() {
+                      return React__default.createElement(
+                          'div',
+                          null,
+                          loading ? React__default.createElement(
+                              'span',
+                              null,
+                              '...'
+                          ) : React__default.createElement(
+                              'div',
+                              null,
+                              get(_class.prototype.__proto__ || Object.getPrototypeOf(_class.prototype), 'render', this).call(this)
+                          )
+                      );
+                  }
+              }]);
+              return _class;
+          }(WrappedComponent), _class.displayName = 'WithLoad(' + getDisplayName(WrappedComponent) + ')', _temp;
+      };
+  }
+
   var index = {
       Button: Button,
       ButtonArea: ButtonArea,
       ButtonPreview: ButtonPreview,
+      withHeader: withHeader,
+      withFooter: withFooter,
+      withLoad: withLoad,
       version: version
   };
 

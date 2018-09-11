@@ -6,8 +6,8 @@ import {
     HashRouter as Router,
     Route
 } from 'react-router-dom';
-import './style.scss';
-import'../release/dist/roo-bat.min.css';
+import 'asset/style/style.scss';
+import'release/dist/roo-bat.min.css';
 import routes from './router';
 
 const App = (props, context) =>

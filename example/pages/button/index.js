@@ -1,7 +1,6 @@
 import React from 'react';
-import {Button, ButtonArea} from '../../../release/dist/roo-bat.min';
-//import {Button, ButtonArea} from '../../../release/lib/index';
-import Layout from '../../layout';
+import {Button, ButtonArea} from 'release/dist/roo-bat.min';
+import Layout from 'layout/layout';
 import './style.scss';
 
 export default class ButtonDemo extends React.Component {
